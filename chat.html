@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Evandro Bot — Matemática · SESI Tatuí</title>
+<title>Evandro Bot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -639,6 +639,20 @@ html.dark .tour-card{background:#1C1C22}
   .sb-mob-tab{display:flex;left:-30px;opacity:0;pointer-events:none}
   .sb.open + .sb-mob-tab{left:min(calc(var(--sbw) - 1px),calc(100vw - 1px));opacity:1;pointer-events:auto}
 }
+@media(max-width:600px){
+  :root{--sbw:min(82vw,274px)}
+  .topbar{padding:0 8px}
+  .tb-sub,.tb-badge{display:none}
+  .tb-r{gap:2px}
+  .hbt,.dk-btn2{width:28px;height:28px}
+  .tb-title{font-size:.8rem}
+}
+@media(max-width:420px){
+  #timerBtn,#clearBtn{display:none}
+  .tb-l{gap:5px}
+  .topbar{padding:0 6px}
+  .btn-ham{padding:2px}
+}
 @media(max-width:540px){.calc-num{font-size:2.4rem}.ck{height:56px;font-size:1.1rem}.quiz-question{font-size:1.85rem}}
 
 /* Right panel (PC only) */
@@ -676,7 +690,7 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
           <div class="sbh-eyes"><div class="sbh-eye"></div><div class="sbh-eye"></div></div>
           <div class="sbh-mouth"></div>
         </div>
-        <div><div class="sbh-nm">Evandro Bot</div><div class="sbh-sub">Matemática · SESI Tatuí</div></div>
+        <div><div class="sbh-nm">Evandro Bot</div><div class="sbh-sub"></div></div>
       </div>
       <button class="sb-mini-toggle" id="sbMiniToggle" type="button" aria-label="Fechar menu lateral" title="Fechar menu lateral">
         <span></span><span></span><span></span>
@@ -768,8 +782,7 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
         </div>
         <div class="sb-sec">🛠️ Administração</div>
         <div class="prof-box">
-          <div class="prof-note">Sincronização em nuvem automática ativa (sem configuração manual nesta tela).</div>
-          <div class="prof-note" id="supaStatus">Nuvem: aguardando sessão.</div>
+          <div class="prof-note" id="supaStatus">Sincronizacao.</div>
           <div class="prof-grid">
             <button class="prof-btn sec" data-onclick="refreshAlunoSel();refreshRanking()">🔄 Atualizar Dados</button>
             <button class="prof-btn sec" data-onclick="exportRankingCSV()">⬇️ Exportar Ranking CSV</button>
@@ -803,7 +816,7 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
       <button class="sbn" data-onclick="send('Explica fração com exemplos visuais');closeSb()"><div class="sbi">½</div>Frações — partes do todo</button>
       <button class="sbn" data-onclick="send('Explica formas geométricas do dia a dia');closeSb()"><div class="sbi">🔷</div>Formas geométricas</button>
       <button class="sbn" data-onclick="send('Explica medidas de comprimento metro centímetro');closeSb()"><div class="sbi">📏</div>Medidas</button>
-      <button class="sbn" data-onclick="send('Me conta uma curiosidade incrível sobre matemática');closeSb()"><div class="sbi">💡</div>Curiosidade matemática</button>
+      <button class="sbn" data-onclick="send('Me conta uma curiosidade de matematica');closeSb()"><div class="sbi">💡</div>Curiosidade</button>
       <div style="height:8px"></div>
     </div>
 
@@ -851,8 +864,8 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
   <div class="topbar">
     <div class="tb-l">
       <button class="btn-ham" data-onclick="toggleSb()" aria-label="Menu"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <div><div class="tb-title" id="tbTitle">Evandro Bot</div><div class="tb-sub" id="tbSub">Assistente de Matemática · SESI</div></div>
-      <div class="tb-badge">SESI</div>
+      <div><div class="tb-title" id="tbTitle">Evandro Bot</div><div class="tb-sub" id="tbSub">Matematica</div></div>
+      <div class="tb-badge"></div>
     </div>
     <div class="tb-r">
       <div class="tb-streak" id="tbStreak" style="display:none">🔥 <span id="tbStN">0</span></div>
@@ -869,15 +882,15 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
       <button class="hbt" id="timerBtn" data-onclick="toggleTimer()" title="Timer (T)" aria-label="Timer">⏱️</button>
       <button class="hbt" id="sndBtn" data-onclick="toggleSound()" title="Som (S)" aria-label="Som"><svg id="sndIco" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
       <button class="dk-btn2" id="dkBtn" data-onclick="toggleDark()" title="Tema (D)" aria-label="Tema">🌙</button>
-      <button class="hbt" data-onclick="clearChat()" title="Limpar chat" aria-label="Limpar"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+      <button class="hbt" id="clearBtn" data-onclick="clearChat()" title="Limpar chat" aria-label="Limpar"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
     </div>
   </div>
   <div class="msgs" id="msgs" role="log" aria-live="polite" aria-label="Mensagens"></div>
   <div class="ibar">
-    <textarea class="ifield" id="ifield" placeholder="Pergunte qualquer coisa de matemática... 😊" aria-label="Digite sua mensagem"></textarea>
+    <textarea class="ifield" id="ifield" placeholder="Digite sua mensagem" aria-label="Digite sua mensagem"></textarea>
     <button class="isend" data-onclick="sendInput()" id="isendBtn" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
   </div>
-  <div class="fbar">Powered by <strong>Evandro Bot</strong> · SESI Tatuí &nbsp;|&nbsp; <span style="opacity:.55" id="shortcutHint">C = calculadora · D = tema · T = timer · S = som</span></div>
+  <div class="fbar"><span style="opacity:.55" id="shortcutHint">C = calculadora · D = tema · T = timer · S = som</span></div>
 </div>
 </div>
 
@@ -953,9 +966,7 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
 <div id="tourEl" style="display:none"></div>
 
 <script>
-/* ══════════════════════════════════════════════════════
-   db.js — Evandro Bot v6 · SESI Tatuí
-══════════════════════════════════════════════════════ */
+/* Core */
 const DB_KEY = 'evbot_v6';
 const SESSION_KEY = `${DB_KEY}_sess`;
 let storageWriteWarned = false;
@@ -1178,7 +1189,7 @@ async function ensureSupaSession(opts={}){
       updateSupaStatusUI();
       return true;
     }
-    if(!silent)showToast('inf','Faça login na nuvem primeiro.','Entre pela tela inicial (Aluno/Professor) e tente novamente.','🔐');
+    if(!silent)showToast('inf','Faca login primeiro.','','🔐');
     return false;
   }catch(err){markSupaError(err);return false;}
 }
@@ -1186,7 +1197,7 @@ function markSupaError(err){
   console.error('Supabase error:',err);
   if(supaWarned)return;
   supaWarned=true;
-  try{showToast('err','Falha no Supabase','Aplicativo segue com dados locais neste computador.','☁️');}catch(_){}
+  try{showToast('err','Falha no Supabase','Dados locais continuam ativos.','☁️');}catch(_){}
 }
 function getProfileStamp(p){
   const n=Number((p&&p.updatedAtMs)||0);
@@ -1468,11 +1479,11 @@ function updateSupaStatusUI(){
   const st=document.getElementById('supaStatus');
   if(!st)return;
   const cfg=getSupaConfig();
-  if(!cfg.url||!cfg.anon){st.textContent='Nuvem: configuração ausente.';return;}
-  if(!getSupaClient()){st.textContent='Nuvem: cliente indisponível.';return;}
+  if(!cfg.url||!cfg.anon){st.textContent='Sincronizacao indisponivel.';return;}
+  if(!getSupaClient()){st.textContent='Sincronizacao indisponivel.';return;}
   const room=getRoomCode();
-  if(!supaSession){st.textContent=`Nuvem ativa · sala ${room.toUpperCase()} · conectando sessão.`;return;}
-  st.textContent=`Nuvem ativa · sala ${room.toUpperCase()} · sincronização automática.`;
+  if(!supaSession){st.textContent=`Sala ${room.toUpperCase()} · conectando`;return;}
+  st.textContent=`Sala ${room.toUpperCase()} · sincronizado`;
 }
 async function syncSupaNow(silent=false){
   if(!getSupaClient()){
@@ -1496,7 +1507,7 @@ async function syncSupaNow(silent=false){
   await cloudUpsertProfileByKey(cloudKey,payload);
   await syncCurrentProfileFromCloud({silent:true});
   await refreshStudentsFromCloud(true);
-  if(!silent)showToast('suc','Sincronização concluída.','Dados enviados e atualizados pela nuvem.','☁️');
+  if(!silent)showToast('suc','Sincronizado.','','☁️');
   return true;
 }
 async function syncCurrentProfileFromCloud(opts={}){
@@ -1940,7 +1951,7 @@ function setProfessorModeUI(){
     safeLSSet(PREF_RP_COLLAPSED,'1');
   }
   const input=document.getElementById('ifield');
-  if(input)input.placeholder='Comandos do professor: criar desafio, consultar aluno, exportar dados...';
+  if(input)input.placeholder='Digite um comando';
   const hint=document.getElementById('shortcutHint');
   if(hint)hint.textContent='D = tema · S = som';
   updateDesktopLayoutButtons();
@@ -1954,9 +1965,9 @@ setupSidebarControlButtons();
 const initials=(nomeAluno||papel).substring(0,2).toUpperCase();
 document.getElementById('sbAv').textContent=initials;
 document.getElementById('sbName').textContent=nomeAluno||'Usuário';
-document.getElementById('sbRole').textContent=papel==='professor'?'Administrador · SESI Tatuí':'Aluno · SESI Tatuí';
+document.getElementById('sbRole').textContent=papel==='professor'?'Administrador':'Aluno';
 document.getElementById('tbTitle').textContent=nomeAluno?`Olá, ${nomeAluno.split(' ')[0]}!`:'Evandro Bot';
-document.getElementById('tbSub').textContent=papel==='professor'?'Painel Pedagogico · SESI Tatuí':'Assistente de Matemática · IA';
+document.getElementById('tbSub').textContent=papel==='professor'?'Painel':'Matematica';
 
 if(papel==='professor'){
   document.getElementById('profSec').style.display='block';
@@ -2078,7 +2089,22 @@ function switchTab(id,btn){
   btn.classList.add('on');
 }
 function setDiff(d,btn){P.difficulty=d;document.querySelectorAll('.sb-dbt').forEach(b=>b.classList.remove('on'));btn.classList.add('on');saveProfile(P);showToast('inf','Dificuldade: '+{easy:'Fácil 🟢',medium:'Médio 🟡',hard:'Difícil 🔴'}[d],'','');}
-function sair(){
+async function releaseCurrentUsernameClaim(){
+  const cl=getSupaClient();
+  if(!cl)return;
+  const user=normalizeUsuario(nomeAluno||'');
+  if(!user)return;
+  try{
+    if(!(await ensureSupaSession({silent:true})))return;
+    await cl.rpc('evbot_release_username',{
+      _room:getRoomCode(),
+      _papel:papel,
+      _username:user
+    });
+  }catch(_){}
+}
+async function sair(){
+  await releaseCurrentUsernameClaim();
   encerrarSessao();
   location.href='index.html';
 }
@@ -2541,7 +2567,7 @@ function resetAlunoSelecionado(){
   if(!selected){showToast('err','Selecione um aluno para resetar.','','');return;}
   const nome=selected.nome;
   const key=selected.key;
-  if(!confirm(`Resetar todos os dados de ${nome}? (Com Supabase ativo, remove também da nuvem.)`))return;
+  if(!confirm(`Resetar todos os dados de ${nome}?`))return;
   safeLSRemove(key);
   void cloudDeleteProfileByKey(key);
   refreshAlunoSel();
@@ -2552,7 +2578,7 @@ function resetAlunoSelecionado(){
 function resetTurmaDados(){
   if(papel!=='professor'){showToast('inf','Recurso disponivel apenas para professor.','','');return;}
   const room=getRoomCode();
-  if(!confirm(`Limpar dados da turma "${room}" neste computador? (Com Supabase ativo, limpa também da nuvem.)`))return;
+  if(!confirm(`Limpar dados da turma "${room}"?`))return;
   const keys=[];
   for(let i=0;i<safeLSLength();i++){
     const k=safeLSKey(i);
@@ -2707,25 +2733,25 @@ function getProfessorResponse(raw){
   const riskStudent=stats.riskStudent?`${EH(stats.riskStudent.nome)} (${stats.riskStudent.acc}%)`:'sem dados';
 
   if(/^(oi|ola|olá|bom dia|boa tarde|boa noite|e ai|e aí|opa|salve)/.test(t)){
-    return {delay:260,html:`Ola, <strong>Prof. ${EH(fn)}</strong>.<br><br>Resumo atual:<br>• Alunos ativos: <strong>${stats.totalStudents}</strong><br>• Taxa media: <strong>${stats.avgAcc}%</strong><br>• Respostas totais: <strong>${stats.totalAnswers}</strong><br>• Destaque: <strong>${topStudent}</strong><br><br>${btns}`};
+    return {delay:260,html:`Ola, <strong>Prof. ${EH(fn)}</strong>.<br>Alunos: <strong>${stats.totalStudents}</strong> · Taxa: <strong>${stats.avgAcc}%</strong> · Respostas: <strong>${stats.totalAnswers}</strong><br>Destaque: <strong>${topStudent}</strong><br><br>${btns}`};
   }
   if(/quanto|calcula|resolver conta|resultado de|[\d\s]+[\+\-\*x×\/÷][\d\s]+/.test(t)){
-    return {delay:200,html:`No perfil professor, eu nao resolvo contas diretamente para manter foco pedagogico.<br><br>Posso apoiar com:<br>• criacao de desafios<br>• relatorio da turma<br>• analise de aluno com risco<br><br>${btns}`};
+    return {delay:200,html:`No perfil professor, use os botoes de gestao da turma.<br><br>${btns}`};
   }
   if(/relatorio|painel|turma|visao geral|visão geral/.test(t)){
     runClassSnapshot();
     return {delay:120,txt:'Gerando relatorio completo da turma no chat...' };
   }
   if(/aluno|historico|histórico|desempenho individual|analise individual|análise individual/.test(t)){
-    return {delay:220,html:`Selecione um aluno na lista lateral e use <strong>Analise do Aluno Selecionado</strong> para diagnostico pedagogico.<br><br>Aluno com maior risco agora: <strong>${riskStudent}</strong>.`};
+    return {delay:220,html:`Selecione um aluno e use <strong>Analise do Aluno Selecionado</strong>.<br>Maior risco: <strong>${riskStudent}</strong>.`};
   }
   if(/desafio|atividade|exercicio|exercício|lista|avaliacao|avaliação/.test(t)){
-    return {delay:240,html:`Use o bloco <strong>Criar Desafio</strong> para um desafio customizado ou clique em <strong>Desafio Adaptativo para Turma</strong> para automatizar pela dificuldade da sala.<br><br>${btns}`};
+    return {delay:240,html:`Use <strong>Criar Desafio</strong> ou <strong>Desafio Adaptativo para Turma</strong>.<br><br>${btns}`};
   }
   if(/exportar|backup|csv|json|dados/.test(t)){
-    return {delay:220,html:`Ferramentas de exportacao estao em <strong>Administracao</strong>: ranking CSV e backup JSON da turma.`};
+    return {delay:220,html:`Exportacao em <strong>Administracao</strong>: CSV e JSON.`};
   }
-  return {delay:260,html:`Modo professor ativo. Posso ajudar com gestao pedagogica da turma, analise de risco e distribuicao de desafios.<br><br>${btns}`};
+  return {delay:260,html:`Modo professor ativo.<br><br>${btns}`};
 }
 
 /* ══════════════════════════════════
@@ -2754,18 +2780,18 @@ function getResponse(raw){
   if(/^(oi|ol[aá]|hey|bom dia|boa tarde|boa noite|salve|e [aá]i|oioi|opa|eai)/.test(t)){
     const hr = new Date().getHours();
     const sg = hr<12?'Bom dia ☀️':hr<18?'Boa tarde 🌤️':'Boa noite 🌙';
-    return { delay:350, html:`${sg}${fn?', <strong>'+fnH+'</strong>':''} 😄<br><br>Sou o <strong>Evandro Bot</strong>, seu professor robô de Matemática! 🤖<br>${lv.badge} Nível <strong>${lv.nome}</strong> · ${P.xp} xp${P.streak>=2?' · 🔥 '+P.streak+' seguidos!':''}<br><br>${mainBtns}` };
+    return { delay:350, html:`${sg}${fn?', <strong>'+fnH+'</strong>':''}.<br>${lv.badge} Nivel <strong>${lv.nome}</strong> · ${P.xp} xp${P.streak>=2?' · 🔥 '+P.streak+' seguidos!':''}<br><br>${mainBtns}` };
   }
   if(/^(tchau|xau|at[eé] logo|adeus|falou|flw)/.test(t))
-    return { delay:300, txt:`Tchau${fn?', '+fn:''}! 👋\n\nFoi ótimo estudar com você! Volte sempre! 🌟` };
+    return { delay:300, txt:`Tchau${fn?', '+fn:''}!` };
   if(/obrigad|valeu|vlw/.test(t))
-    return { delay:280, txt:`De nada${fn?', '+fn:''}! 😊 Fico feliz em ajudar!\n\nContinue praticando — você está indo muito bem! 💪` };
+    return { delay:280, txt:`De nada${fn?', '+fn:''}!` };
   if(/parab[eé]n|arrasou|mandou bem|show|incrív|demais|que top/.test(t))
-    return { delay:280, txt:`Obrigado${fn?', '+fn:''}! 😄 Você também está arrasando!\n\nCada exercício te deixa mais esperto! 💪` };
+    return { delay:280, txt:`Obrigado${fn?', '+fn:''}!` };
 
   /* ──────── identidade do bot ──────── */
   if(/quem [eé] voc[eê]|o que [eé] isso|o que voc[eê] faz|voc[eê] [eé]/.test(t))
-    return { delay:420, html:`Sou o <strong>Evandro Bot</strong>! 🤖<br><br>Professor robô de Matemática do <strong>SESI Tatuí</strong>! Fui feito para te ajudar a:<br><br>🎯 Praticar desafios com XP e conquistas<br>📚 Aprender com explicações visuais<br>📊 Treinar tabuadas e fazer quizzes<br>🏆 Subir de nível e bater recordes!<br><br>${mainBtns}` };
+    return { delay:420, html:`Sou o <strong>Evandro Bot</strong>.<br><br>${mainBtns}` };
 
   /* ──────── cálculo direto ("quanto é 5+3?") ──────── */
   {
@@ -2874,8 +2900,8 @@ function getResponse(raw){
 
   /* ──────── padrão: resposta rica contextual ──────── */
   const opts = [
-    `Boa pergunta${n}! 🤔<br><br>Posso te ajudar com qualquer tema de Matemática! Tente perguntar:<br><br>📐 <em>"Explica adição"</em> ou <em>"Explica frações"</em><br>📊 <em>"Tabuada do 7"</em><br>💡 <em>"Curiosidade"</em> ou <em>"Dica de estudo"</em><br>🧮 <em>"Quanto é 8×9?"</em><br><br>${mainBtns}`,
-    `Hmm, não entendi direito${n}! 😅<br><br>Sou especialista em Matemática! Experimente perguntar:<br><br>📚 Adição · Subtração · Multiplicação · Divisão<br>🔢 Tabuadas de 1 a 10<br>🔷 Frações · Geometria · Medidas<br>💡 Curiosidades matemáticas<br><br>${mainBtns}`,
+    `Posso ajudar em matematica${n}.<br><br>${mainBtns}`,
+    `Nao entendi. Tente uma pergunta de matematica.<br><br>${mainBtns}`,
   ];
   return { delay:460, html: opts[Math.floor(Date.now()/8000)%opts.length] };
 }
@@ -2919,13 +2945,13 @@ const CURIOSITIES=[
   `Com apenas **27 cartas**, um mágico pode descobrir qualquer carta usando divisão por 3! \nA matemática está em toda mágica! 🎩`,
 ];
 let curIdx=0;
-function buildCuriosity(){const c=CURIOSITIES[curIdx%CURIOSITIES.length];curIdx++;return`<div class="lc"><div class="lc-title"><div class="lc-sym">💡</div>Curiosidade Matemática!</div><div class="lc-def">${ML(c)}</div><div class="msg-btns" style="margin-top:8px"><button class="mb purple" data-onclick="send('Me conta uma curiosidade incrível sobre matemática')">Mais uma! 🎲</button></div></div>`;}
+function buildCuriosity(){const c=CURIOSITIES[curIdx%CURIOSITIES.length];curIdx++;return`<div class="lc"><div class="lc-title"><div class="lc-sym">💡</div>Curiosidade</div><div class="lc-def">${ML(c)}</div><div class="msg-btns" style="margin-top:8px"><button class="mb purple" data-onclick="send('Me conta uma curiosidade de matematica')">Mais uma</button></div></div>`;}
 
 const TIPS=[`**Estude um pouquinho todo dia!**\n15 minutos diários é melhor que 2 horas de uma vez. Seu cérebro agradece! 🧠`,`**Fale a tabuada em voz alta!**\nSom + movimento = memória mais forte. Tente cantar a tabuada! 🎵`,`**Calcule no papel antes!**\nEscrever ajuda o cérebro a organizar as ideias. Use a calc só para conferir! ✏️`,`**Durma bem antes das provas!**\nO cérebro organiza o que aprendeu durante o sono. Dormir = estudar! 😴`];
 let tipIdx=0;
 function buildStudyTip(){const t=TIPS[tipIdx%TIPS.length];tipIdx++;return`<div class="lc"><div class="lc-title"><div class="lc-sym">📚</div>Dica de Estudo!</div><div class="lc-def">${ML(t)}</div><div class="msg-btns" style="margin-top:8px"><button class="mb green" data-onclick="send('Me dá uma dica de estudo')">Mais uma dica!</button></div></div>`;}
 
-function buildHelp(){return`<div class="lc"><div class="lc-title"><div class="lc-sym">🤖</div>O que posso fazer?</div><div class="lc-def">Escolha uma opção:</div><div class="msg-btns" style="margin-top:8px"><button class="mb red" data-onclick="enviarDesafio('adicao')">🎯 Desafio</button><button class="mb purple" data-onclick="startQuiz()">📝 Quiz</button><button class="mb blue" data-onclick="send('Explica adição com exemplos')">📚 Aprender</button><button class="mb green" data-onclick="quickTab(5)">📊 Tabuada</button><button class="mb amber" data-onclick="send('Me conta uma curiosidade incrível sobre matemática')">💡 Curiosidade</button></div></div>`;}
+function buildHelp(){return`<div class="lc"><div class="lc-title"><div class="lc-sym">🤖</div>Menu rapido</div><div class="msg-btns" style="margin-top:8px"><button class="mb red" data-onclick="enviarDesafio('adicao')">🎯 Desafio</button><button class="mb purple" data-onclick="startQuiz()">📝 Quiz</button><button class="mb blue" data-onclick="send('Explica adição com exemplos')">📚 Aprender</button><button class="mb green" data-onclick="quickTab(5)">📊 Tabuada</button></div></div>`;}
 
 /* ══════════════════════════════════
    MATH ENGINE
@@ -3680,14 +3706,15 @@ function openHistory(){
 }
 function closeHist(){const el=document.getElementById('histEl');el.style.display='none';el.innerHTML='';}
 function closeHistIfOverlay(ev,el){if(ev&&ev.target!==el)return;closeHist();}
-function resetOwnProgress(){
+async function resetOwnProgress(){
   const nome=nomeAluno||'Aluno';
-  if(!confirm(`Apagar TODO o progresso de ${nome}? (Com Supabase ativo, remove também da nuvem.) Esta ação não pode ser desfeita!`))return;
+  if(!confirm(`Apagar todo o progresso de ${nome}? Esta acao nao pode ser desfeita.`))return;
   const localKey=profileStorageKey(papel,nomeAluno||'default');
   const cloudKey=profileCloudKey(papel,nomeAluno||'default');
   safeLSRemove(localKey);
   if(cloudKey!==localKey)safeLSRemove(cloudKey);
   void cloudDeleteProfileByKey(cloudKey);
+  await releaseCurrentUsernameClaim();
   encerrarSessao();
   location.href='index.html';
 }
@@ -3696,9 +3723,9 @@ function resetOwnProgress(){
    TOUR (3 steps, first visit)
 ══════════════════════════════════ */
 const TOUR=[
-  {ico:'red',em:'🧮',num:'1 de 3',title:'Calculadora flutuante!',body:'Clique em 🧮 na barra superior para abrir a calculadora. Quando tiver um desafio, ela abre <strong>automaticamente</strong> e mostra o botão <strong>CONFIRMAR</strong> bem grande!'},
-  {ico:'purple',em:'📝',num:'2 de 3',title:'Modo Quiz!',body:'Clique em "📝 Quiz" no menu lateral para fazer uma <strong>prova de 5 perguntas</strong> com múltipla escolha. No final você recebe uma <strong>nota de 0 a 10</strong>!'},
-  {ico:'green',em:'🤖',num:'3 de 3',title:'Pergunte qualquer coisa!',body:'Digite qualquer pergunta de Matemática no campo abaixo! O Evandro Bot responde na hora com explicações visuais, dicas e curiosidades. <strong>Nuvem automática</strong> quando conectado, com continuidade local se cair internet. 🚀'},
+  {ico:'red',em:'🧮',num:'1 de 3',title:'Calculadora',body:'Use o botao 🧮 na barra superior.'},
+  {ico:'purple',em:'📝',num:'2 de 3',title:'Quiz',body:'Use o menu lateral para iniciar o quiz com 5 perguntas.'},
+  {ico:'green',em:'🤖',num:'3 de 3',title:'Perguntas',body:'Digite sua pergunta no campo inferior.'},
 ];
 let tourIdx=0;
 function showTour(){
@@ -3711,7 +3738,7 @@ function showTour(){
     <h3>${t.title}</h3>
     <p>${t.body}</p>
     <div class="tour-dots">${TOUR.map((_,i)=>`<div class="tour-dot ${i===tourIdx?'on':''}"></div>`).join('')}</div>
-    <button class="tour-next" data-onclick="nextTour()">${tourIdx<TOUR.length-1?'Próximo →':'Entendi! Vamos jogar! 🚀'}</button>
+    <button class="tour-next" data-onclick="nextTour()">${tourIdx<TOUR.length-1?'Proximo':'Fechar'}</button>
     <button class="tour-skip" data-onclick="skipTour()">Pular tour</button>
   </div></div>`;
 }
@@ -3725,7 +3752,7 @@ function skipTour(){document.getElementById('tourEl').style.display='none';P.tou
   addDayDiv();
   await sleep(320);showTyping();await sleep(950);hideTyping();
   if(papel==='professor'){
-    addBot(`Ola, <strong>Prof. ${EH(nomeAluno||'')}</strong>.<br><br>Modo professor ativo com foco pedagogico.<br>• Relatorios de turma em tempo real<br>• Analise de risco por aluno<br>• Desafios adaptativos para a sala<br><br><div class="msg-btns"><button class="mb blue" data-onclick="runClassSnapshot()">📍 Relatorio da Turma</button><button class="mb red" data-onclick="enviarDesafioAdaptativoTurma()">🎯 Desafio Adaptativo</button><button class="mb green" data-onclick="refreshAlunoSel();refreshRanking();updateProfessorDashboard()">🔄 Atualizar Dados</button></div>`);
+    addBot(`Ola, <strong>Prof. ${EH(nomeAluno||'')}</strong>.<br><br><div class="msg-btns"><button class="mb blue" data-onclick="runClassSnapshot()">📍 Relatorio da Turma</button><button class="mb red" data-onclick="enviarDesafioAdaptativoTurma()">🎯 Desafio Adaptativo</button><button class="mb green" data-onclick="refreshAlunoSel();refreshRanking();updateProfessorDashboard()">🔄 Atualizar Dados</button></div>`);
     refreshRanking();
     updateProfessorDashboard();
   }else{
@@ -3733,9 +3760,9 @@ function skipTour(){document.getElementById('tourEl').style.display='none';P.tou
     const primeiraVez=P.totalQ===0;
     const voltando=P.totalQ>0&&P.streak>=3;
     let msg='';
-    if(primeiraVez){msg=`Olá, <strong>${EH(nomeAluno||'amigo(a)')}!</strong> 😄 Seja bem-vindo(a)!<br><br>Sou o <strong>Evandro Bot</strong>, seu professor robô de Matemática! 🤖✨<br>Aqui você pratica, aprende e sobe de nível!<br><br>`;}
-    else if(voltando){msg=`Que ótimo te ver de volta, <strong>${EH(nomeAluno||'')}</strong>! 🔥<br>Você tem uma sequência de <strong>${P.streak}</strong> acertos — continue assim!<br>Nível: ${lv.badge} <strong>${lv.nome}</strong> · ${P.xp}xp<br><br>`;}
-    else{msg=`Olá de novo, <strong>${EH(nomeAluno||'')}</strong>! 😊<br>Nível ${lv.badge} <strong>${lv.nome}</strong> · ${P.xp}xp · ${P.totalOk} acertos<br><br>`;}
+    if(primeiraVez){msg=`Ola, <strong>${EH(nomeAluno||'')}</strong>.<br><br>`;}
+    else if(voltando){msg=`Bem-vindo de volta, <strong>${EH(nomeAluno||'')}</strong>.<br>Nivel: ${lv.badge} <strong>${lv.nome}</strong> · ${P.xp}xp<br><br>`;}
+    else{msg=`Ola, <strong>${EH(nomeAluno||'')}</strong>.<br>Nivel ${lv.badge} <strong>${lv.nome}</strong> · ${P.xp}xp<br><br>`;}
     msg+=`<div class="msg-btns"><button class="mb red" data-onclick="enviarDesafio('adicao')">🎯 Desafio!</button><button class="mb purple" data-onclick="startQuiz()">📝 Quiz!</button><button class="mb blue" data-onclick="send('Explica adição com exemplos')">📚 Aprender</button><button class="mb green" data-onclick="quickTab(5)">📊 Tabuada</button></div>`;
     addBot(msg);
     // Show tour on first visit

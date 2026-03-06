@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Evandro Bot — SESI Tatuí</title>
+<title>Evandro Bot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,9 +14,16 @@
   --r:#CC0000;--rdk:#8B0000;--rlt:#FF4444;
   --bg:#F2F2F6;--card:#FFFFFF;--tx:#111113;--sub:#6B6B7A;--brd:#E2E2EA;
   --e1:cubic-bezier(.34,1.56,.64,1);--e3:cubic-bezier(.4,0,.2,1);
+  --app-h:100vh;
 }
+@supports (height:100dvh){:root{--app-h:100dvh}}
 html.dark{--bg:#0B0B0E;--card:#16161A;--tx:#F0F0F2;--sub:#88889A;--brd:#2A2A34;color-scheme:dark}
-html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);overflow:hidden}
+html,body{
+  width:100%;max-width:100%;
+  height:var(--app-h);min-height:var(--app-h);
+  font-family:'Nunito',sans-serif;background:var(--bg);
+  overflow-x:hidden;overflow-y:auto;
+}
 
 /* Background */
 .bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -33,7 +40,12 @@ html.dark .bg-grid{opacity:.08}
 .dk-btn:hover{transform:scale(1.15) rotate(18deg)}
 
 /* Stage */
-.stage{position:relative;z-index:10;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{
+  position:relative;z-index:10;
+  min-height:var(--app-h);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 16px calc(20px + env(safe-area-inset-bottom));
+}
 
 /* Card */
 .card{
@@ -55,6 +67,21 @@ button:focus-visible,[role="button"]:focus-visible,input:focus-visible,textarea:
     transition:none!important;
     scroll-behavior:auto!important;
   }
+}
+@media (max-width:680px){
+  .stage{padding:14px 12px calc(14px + env(safe-area-inset-bottom))}
+  .card{max-width:560px;padding:28px 18px 22px;border-radius:26px}
+  .roles{grid-template-columns:1fr}
+  .step-title{font-size:1.05rem}
+  .brand{font-size:1.6rem}
+  .rob{width:72px;height:72px;border-radius:20px}
+}
+@media (max-width:420px){
+  .card{padding:22px 14px 16px;border-radius:20px}
+  .brand{font-size:1.42rem}
+  .name-inp{padding:10px 12px}
+  .enter-btn{padding:12px}
+  .dk-btn{top:8px;right:8px}
 }
 .stripe{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--rlt),var(--r),var(--rdk),var(--r),var(--rlt));background-size:300%;animation:sm 2.8s linear infinite}
 @keyframes sm{to{background-position:300% 0}}
@@ -114,7 +141,7 @@ html.dark .name-inp:focus{background:#161619}
 .name-err{font-size:.64rem;font-weight:700;color:var(--r);margin-top:4px;display:none;padding-left:4px}
 .name-err.show{display:block}
 .auth-grid{display:grid;gap:10px}
-.auth-help{display:none}
+.auth-help{font-size:.64rem;font-weight:700;color:var(--sub);margin-top:4px;min-height:1.1em}
 .chk-row{display:flex;align-items:center;justify-content:flex-start;margin:6px 0 8px}
 .chk-inp{
   position:absolute;
@@ -192,25 +219,25 @@ html.dark .chk-box{background:#121216;border-color:#2D2D36}
         <div class="rscreen"><span>÷×+−</span></div>
       </div>
       <div class="brand">Evandro Bot</div>
-      <div class="brand-tag">Matemática · SESI Tatuí</div>
+      <div class="brand-tag"></div>
     </div>
 
     <!-- STEP 1: escolher papel -->
     <div id="s1" class="step">
       <div class="step-title">Quem vai entrar? 👋</div>
-      <div class="step-sub">Selecione o perfil de acesso para continuar</div>
+      <div class="step-sub">Selecione o perfil</div>
       <div class="roles">
         <div class="role" id="rP" data-onclick="selRole('professor')" tabindex="0" aria-pressed="false">
           <div class="role-fill"></div>
           <div class="rico"><svg viewBox="0 0 24 24"><path d="M14.5 2 20 7.5 7.5 20l-5.5.5.5-5.5z"/><path d="m11.5 5.5 7 7"/></svg></div>
           <div class="rlbl">Professor</div>
-          <div class="rdsc">Painel pedagógico, relatórios e gestão da turma</div>
+          <div class="rdsc"></div>
         </div>
         <div class="role" id="rA" data-onclick="selRole('aluno')" tabindex="0" aria-pressed="false">
           <div class="role-fill"></div>
           <div class="rico"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
           <div class="rlbl">Aluno</div>
-          <div class="rdsc">Praticar matemática com desafios e quizzes</div>
+          <div class="rdsc"></div>
         </div>
       </div>
       <button class="enter-btn" id="s1Btn" data-onclick="goS2()" disabled>
@@ -222,17 +249,19 @@ html.dark .chk-box{background:#121216;border-color:#2D2D36}
     <!-- STEP 2: acesso -->
     <div id="s2" class="step" style="display:none">
       <div class="step-title" id="s2Title">Acesso do aluno</div>
-      <div class="step-sub" id="s2Sub">Entre para continuar</div>
+      <div class="step-sub" id="s2Sub"></div>
       <div class="auth-grid">
         <div class="name-wrap">
           <div class="name-lbl">USUÁRIO</div>
-          <input class="name-inp" id="userInp" type="text" placeholder="Ex: joaosilva" maxlength="10" autocomplete="username" spellcheck="false"/>
-          <div class="auth-note">Máximo 10 caracteres: letras, números ou _</div>
+          <input class="name-inp" id="userInp" type="text" placeholder="Usuario" maxlength="10" autocomplete="username" spellcheck="false"/>
         </div>
         <div class="name-wrap">
           <div class="name-lbl">CÓDIGO DA SALA</div>
-          <input class="name-inp" id="roomInp" type="text" placeholder="Ex: 9B" maxlength="24" autocomplete="off" spellcheck="false"/>
-          <div class="auth-note">Use o mesmo código nos dois notebooks (padrão: 9B)</div>
+          <input class="name-inp" id="roomInp" type="text" placeholder="Codigo da sala" maxlength="24" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="name-wrap" id="profCodeWrap" style="display:none">
+          <div class="name-lbl">CODIGO DO PROFESSOR</div>
+          <input class="name-inp" id="profCodeInp" type="password" inputmode="numeric" placeholder="Codigo de acesso" maxlength="6" autocomplete="off" spellcheck="false"/>
         </div>
       </div>
       <div class="chk-row">
@@ -251,15 +280,11 @@ html.dark .chk-box{background:#121216;border-color:#2D2D36}
       </button>
       <div class="auth-help" id="authHelp"></div>
     </div>
-
-    <div class="fnote">Acesso exclusivo <strong>SESI Tatuí</strong> · Plataforma Escolar</div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════
-   db.js — Evandro Bot v6 · SESI Tatuí
-══════════════════════════════════════════════════════ */
+/* Core */
 const DB_KEY = 'evbot_v6';
 const SESSION_KEY = `${DB_KEY}_sess`;
 const ROOM_CODE_KEY = 'evbot_room_code';
@@ -320,6 +345,22 @@ function getStoredRoomCode(){return normalizeRoomCode(safeLSGet(ROOM_CODE_KEY)||
 function setStoredRoomCode(v){safeLSSet(ROOM_CODE_KEY,normalizeRoomCode(v));}
 function shouldPersistAuth(){return safeLSGet(SUPA_AUTH_PERSIST_KEY)!=='0';}
 function setPersistAuthChoice(v){safeLSSet(SUPA_AUTH_PERSIST_KEY,v?'1':'0');}
+function parseProfessorGrantResponse(raw){
+  const data=(raw&&typeof raw==='object')?raw:{};
+  if(data.granted===true)return {ok:true,msg:''};
+  const reason=String(data.reason||'').toLowerCase();
+  if(reason==='room_mismatch')return {ok:false,msg:'Sala invalida para esta sessao.'};
+  if(reason==='unauthenticated')return {ok:false,msg:'Sessao invalida. Tente novamente.'};
+  const lockMins=Number.parseInt(String(data.lock_minutes||'0'),10);
+  const remain=Number.parseInt(String(data.remaining_attempts||'0'),10);
+  if(Number.isFinite(lockMins)&&lockMins>0){
+    return {ok:false,msg:`Limite de tentativas atingido. Aguarde ${lockMins} min.`};
+  }
+  if(Number.isFinite(remain)&&remain>=0){
+    return {ok:false,msg:`Codigo de professor invalido. Restam ${remain} tentativa${remain===1?'':'s'}.`};
+  }
+  return {ok:false,msg:'Codigo de professor invalido.'};
+}
 function makeStorageAdapter(persist){
   return {
     getItem:(key)=>persist?safeLSGet(key):safeSSGet(key),
@@ -477,6 +518,16 @@ function encerrarSessao() { safeSSRemove(SESSION_KEY); safeLSRemove(SESSION_KEY)
 /* Dark mode */
 function tgDk(){const d=document.documentElement.classList.toggle('dark');safeLSSet('evbot_dark',d?'1':'0');document.getElementById('dkb').textContent=d?'☀️':'🌙';}
 document.getElementById('dkb').textContent=document.documentElement.classList.contains('dark')?'☀️':'🌙';
+function syncLoginHeight(){
+  const vv=window.visualViewport;
+  const h=Math.max(420,Math.round(vv?vv.height:window.innerHeight));
+  document.documentElement.style.setProperty('--app-h',`${h}px`);
+}
+syncLoginHeight();
+window.addEventListener('resize',syncLoginHeight,{passive:true});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',syncLoginHeight,{passive:true});
+}
 
 
 const DATA_ACTION_TAGS=new Set(['BUTTON','A','INPUT','TEXTAREA','SELECT','OPTION','LABEL']);
@@ -588,7 +639,16 @@ function setAuthError(msg,autoClearMs=0){
 function setAuthMode(){
   document.getElementById('s2BtnTxt').textContent='Entrar';
   const helpEl=document.getElementById('authHelp');
-  if(helpEl)helpEl.textContent='';
+  const profWrap=document.getElementById('profCodeWrap');
+  const profInp=document.getElementById('profCodeInp');
+  if(chosenRole==='professor'){
+    if(profWrap)profWrap.style.display='block';
+    if(helpEl)helpEl.textContent='Codigo de professor obrigatorio.';
+  }else{
+    if(profWrap)profWrap.style.display='none';
+    if(profInp)profInp.value='';
+    if(helpEl)helpEl.textContent='';
+  }
   setAuthError('');
 }
 function updateAuthHeader(){
@@ -596,10 +656,10 @@ function updateAuthHeader(){
   const s=document.getElementById('s2Sub');
   if(chosenRole==='professor'){
     t.textContent='Acesso do professor';
-    s.textContent='Entre para continuar.';
+    s.textContent='';
   }else{
     t.textContent='Acesso do aluno';
-    s.textContent='Entre para continuar.';
+    s.textContent='';
   }
 }
 
@@ -629,6 +689,7 @@ function goS2(){
 
 function parseAuthErr(err){
   const msg=String((err&&err.message)||'').toLowerCase();
+  if(msg.includes('evbot_grant_professor'))return 'Execute o supabase_setup.sql atualizado para habilitar acesso de professor.';
   if(msg.includes('evbot_claim_username'))return 'Execute o supabase_setup.sql atualizado para habilitar login por usuário.';
   if(msg.includes('anonymous')&&(msg.includes('disabled')||msg.includes('not enabled')||msg.includes('provider')))return 'Ative Anonymous em Supabase > Auth > Providers.';
   if(msg.includes('network')||msg.includes('failed to fetch'))return 'Falha de rede ao conectar no Supabase.';
@@ -670,10 +731,20 @@ async function submitAuth(){
   if(!chosenRole){setAuthError('Escolha Aluno ou Professor primeiro.');return;}
   const userEl=document.getElementById('userInp');
   const roomEl=document.getElementById('roomInp');
+  const profCodeEl=document.getElementById('profCodeInp');
+  const helpEl=document.getElementById('authHelp');
   const lembrar=!!document.getElementById('rememberChk').checked;
   const usuario=normalizeUsuario(userEl.value);
   const roomCode=normalizeRoomCode(roomEl?roomEl.value:DEFAULT_ROOM_CODE);
+  const professorCode=String(profCodeEl&&profCodeEl.value?profCodeEl.value:'').trim();
   if(!validarUsuario(usuario)){setAuthError('Usuario invalido. Use 3 a 10 caracteres: a-z, 0-9 ou _.');userEl.focus();return;}
+  if(chosenRole==='professor'){
+    if(!/^\d{6}$/.test(professorCode)){
+      setAuthError('Informe o codigo do professor.');
+      if(profCodeEl)profCodeEl.focus();
+      return;
+    }
+  }
   setPersistAuthChoice(lembrar);
   setStoredRoomCode(roomCode);
   if(lembrar){
@@ -700,6 +771,21 @@ async function submitAuth(){
   try{
     // Fluxo final: usuário + Supabase (anônimo) + claim único por sala/perfil.
     await ensureAnonSessionForUser(cl,usuario,chosenRole,roomCode);
+    if(chosenRole==='professor'){
+      const grant=await cl.rpc('evbot_grant_professor',{
+        _room:roomCode,
+        _code:professorCode
+      });
+      if(grant.error)throw grant.error;
+      const grantState=parseProfessorGrantResponse(grant.data);
+      if(!grantState.ok){
+        setAuthError(grantState.msg);
+        if(helpEl)helpEl.textContent=grantState.msg;
+        if(profCodeEl){profCodeEl.value='';profCodeEl.focus();}
+        return;
+      }
+      if(helpEl)helpEl.textContent='';
+    }
     const claim=await cl.rpc('evbot_claim_username',{
       _room:roomCode,
       _papel:chosenRole,
@@ -732,8 +818,14 @@ async function submitAuth(){
 
 document.getElementById('userInp').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
 document.getElementById('roomInp').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
+document.getElementById('profCodeInp').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
 document.getElementById('userInp').addEventListener('input',()=>setAuthError(''));
 document.getElementById('roomInp').addEventListener('input',()=>setAuthError(''));
+document.getElementById('profCodeInp').addEventListener('input',()=>{
+  setAuthError('');
+  const helpEl=document.getElementById('authHelp');
+  if(helpEl&&chosenRole==='professor')helpEl.textContent='Codigo de professor obrigatorio.';
+});
 
 /* Keyboard nav for role cards */
 document.getElementById('rP').addEventListener('keydown',e=>{if(e.key==='Enter')selRole('professor')});
