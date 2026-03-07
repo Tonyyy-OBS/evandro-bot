@@ -1969,8 +1969,27 @@ document.getElementById('sbRole').textContent=papel==='professor'?'Administrador
 document.getElementById('tbTitle').textContent=nomeAluno?`Olá, ${nomeAluno.split(' ')[0]}!`:'Evandro Bot';
 document.getElementById('tbSub').textContent=papel==='professor'?'Painel':'Matematica';
 
-if(papel==='professor'){
+async function isProfessorGrantedServerSide(){
+  const cl=getSupaClient();
+  if(!cl)return false;
+  if(!(await ensureSupaSession({silent:true})))return false;
+  try{
+    const chk=await cl.rpc('evbot_is_professor',{});
+    if(chk.error)return false;
+    return chk.data===true;
+  }catch(_){
+    return false;
+  }
+}
+async function initProfessorMode(){
   document.getElementById('profSec').style.display='block';
+  const granted=await isProfessorGrantedServerSide();
+  if(!granted){
+    showToast('err','Sessao de professor expirada.','Entre novamente com o codigo.','');
+    encerrarSessao();
+    setTimeout(()=>{location.href='index.html';},500);
+    return;
+  }
   setProfessorModeUI();
   updateSupaStatusUI();
   bindStudentsRealtime();
@@ -1979,6 +1998,7 @@ if(papel==='professor'){
   updateProfessorDashboard();
   void refreshStudentsFromCloud(true);
 }
+if(papel==='professor'){void initProfessorMode();}
 else{initSalaPolling();}
 if(P.difficulty==='medium'){document.getElementById('dM').classList.add('on');document.getElementById('dE').classList.remove('on');}
 if(P.difficulty==='hard'){document.getElementById('dH').classList.add('on');document.getElementById('dE').classList.remove('on');}
@@ -2403,7 +2423,7 @@ function runClassSnapshot(){
 async function analisarAlunoSelecionado(){
   if(papel!=='professor'){showToast('inf','Recurso disponivel apenas para professor.','','');return;}
   const selected=getAlunoSelection();
-  if(!selected){showToast('err','Selecione um aluno para analisar.','','');return;}
+  if(!selected){showToast('err',hasAlunoOptions()?'Selecione um aluno para analisar.':'Nenhum aluno disponivel ainda.','','');return;}
   const nome=selected.nome;
   const key=selected.key;
   let p=null;
@@ -2564,7 +2584,7 @@ async function importTurmaBackupFile(file){
 function resetAlunoSelecionado(){
   if(papel!=='professor'){showToast('inf','Recurso disponivel apenas para professor.','','');return;}
   const selected=getAlunoSelection();
-  if(!selected){showToast('err','Selecione um aluno para resetar.','','');return;}
+  if(!selected){showToast('err',hasAlunoOptions()?'Selecione um aluno para resetar.':'Nenhum aluno disponivel ainda.','','');return;}
   const nome=selected.nome;
   const key=selected.key;
   if(!confirm(`Resetar todos os dados de ${nome}?`))return;
@@ -3484,12 +3504,25 @@ async function enviarDesafioLivre(tipo){
 ══════════════════════════════════ */
 function refreshAlunoSel(){
   const sel=document.getElementById('alunoSel');if(!sel)return;
+  const prev=sel.value||'';
   const alunos=getAllStudents();
   sel.innerHTML='<option value="">Selecionar aluno...</option>'+alunos.map(a=>`<option value="${EAttr(a.key||profileStorageKey('aluno',a.nome||''))}" data-nome="${EAttr(a.nome||'Aluno')}">${EH(a.nome)} — ${EH(a.lv.nome)} · ${a.xp}xp</option>`).join('');
+  if(prev){
+    const opt=Array.from(sel.options).find(o=>o.value===prev);
+    if(opt)sel.value=prev;
+    else if(sel.options.length>1)sel.selectedIndex=1;
+  }else if(sel.options.length>1){
+    sel.selectedIndex=1;
+  }
   if(papel==='professor')updateProfessorDashboard();
+}
+function hasAlunoOptions(){
+  const sel=document.getElementById('alunoSel');
+  return !!(sel&&sel.options&&sel.options.length>1);
 }
 function getAlunoSelection(){
   const sel=document.getElementById('alunoSel');
+  if(sel&&(!sel.value)&&sel.options&&sel.options.length>1)sel.selectedIndex=1;
   if(!sel||!sel.value)return null;
   const opt=sel.options&&sel.selectedIndex>=0?sel.options[sel.selectedIndex]:null;
   const nome=opt&&opt.dataset&&opt.dataset.nome?opt.dataset.nome:'Aluno';
@@ -3497,7 +3530,7 @@ function getAlunoSelection(){
 }
 async function verHistoricoAluno(){
   const selected=getAlunoSelection();
-  if(!selected){showToast('err','Selecione um aluno primeiro!','','');return;}
+  if(!selected){showToast('err',hasAlunoOptions()?'Selecione um aluno primeiro!':'Nenhum aluno disponivel ainda.','','');return;}
   const key=selected.key;
   const nome=selected.nome;
   try{
