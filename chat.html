@@ -258,8 +258,10 @@ html.dark .topbar{box-shadow:0 1px 0 var(--brd),0 2px 6px rgba(0,0,0,.18)}
 .hbt.calc-toggle.has-challenge{background:linear-gradient(135deg,var(--rlt),var(--rdk));color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(204,0,0,.32);animation:calcPulse 1.6s ease-in-out infinite}
 .hbt.calc-toggle svg{width:14px;height:14px}
 @keyframes calcPulse{0%,100%{box-shadow:0 3px 12px rgba(204,0,0,.32)}50%{box-shadow:0 3px 22px rgba(204,0,0,.55),0 0 0 4px rgba(204,0,0,.12)}}
-.tb-title{font-size:.84rem;font-weight:900;color:var(--tx)}
-.tb-sub{font-size:.56rem;color:var(--dim);font-weight:700;margin-top:1px}
+.tb-l{min-width:0}
+.tb-l>div:first-of-type{min-width:0}
+.tb-title{font-size:.84rem;font-weight:900;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(52vw,280px)}
+.tb-sub{font-size:.56rem;color:var(--dim);font-weight:700;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(52vw,280px)}
 .dk-btn2{width:30px;height:30px;border-radius:8px;background:var(--su2);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.88rem;transition:transform .18s var(--e1);flex-shrink:0}
 .dk-btn2:hover{transform:scale(1.11) rotate(18deg)}
 
@@ -645,13 +647,15 @@ html.dark .tour-card{background:#1C1C22}
   .tb-sub,.tb-badge{display:none}
   .tb-r{gap:2px}
   .hbt,.dk-btn2{width:28px;height:28px}
-  .tb-title{font-size:.8rem}
+  .tb-title{font-size:.8rem;max-width:46vw}
+  .is-prof .tb-sub{display:block!important;max-width:46vw}
 }
 @media(max-width:420px){
   #timerBtn,#clearBtn{display:none}
   .tb-l{gap:5px}
   .topbar{padding:0 6px}
   .btn-ham{padding:2px}
+  .tb-title,.tb-sub{max-width:42vw}
 }
 @media(max-width:540px){.calc-num{font-size:2.4rem}.ck{height:56px;font-size:1.1rem}.quiz-question{font-size:1.85rem}}
 
@@ -890,7 +894,7 @@ html.dark .rp{background:#111115;border-color:var(--brd)}
     <textarea class="ifield" id="ifield" placeholder="Digite sua mensagem" aria-label="Digite sua mensagem"></textarea>
     <button class="isend" data-onclick="sendInput()" id="isendBtn" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
   </div>
-  <div class="fbar"><span style="opacity:.55" id="shortcutHint">C = calculadora · D = tema · T = timer · S = som</span></div>
+  <div class="fbar"><span style="opacity:.55" id="shortcutHint">M/[ = menu · C = calculadora · D = tema · T = timer · S = som</span></div>
 </div>
 </div>
 
@@ -1826,6 +1830,19 @@ const PREF_SB_COLLAPSED='evbot_sb_collapsed';
 const PREF_RP_COLLAPSED='evbot_rp_collapsed';
 const PREF_LAYOUT_VER='evbot_layout_pref_v2';
 const appEl=document.querySelector('.app');
+let desktopSidebarToggleLock=false;
+let desktopSidebarToggleTimer=null;
+
+function acquireDesktopSidebarToggleLock(){
+  if(desktopSidebarToggleLock)return false;
+  desktopSidebarToggleLock=true;
+  if(desktopSidebarToggleTimer)clearTimeout(desktopSidebarToggleTimer);
+  desktopSidebarToggleTimer=setTimeout(()=>{
+    desktopSidebarToggleLock=false;
+    desktopSidebarToggleTimer=null;
+  },220);
+  return true;
+}
 
 function isDesktopWide(){return window.matchMedia('(min-width:1280px)').matches;}
 function canCollapseSidebar(){return window.matchMedia('(min-width:901px)').matches;}
@@ -1873,10 +1890,24 @@ function updateDesktopLayoutButtons(){
 }
 function applyDesktopLayoutPrefs(){
   if(!appEl)return;
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('sbOv');
   if(!canCollapseSidebar()){
     appEl.classList.remove('sb-collapsed','rp-collapsed');
+    const sbOpen=!!(sb&&sb.classList.contains('open'));
+    if(ov&&!sbOpen){
+      ov.style.display='none';
+      ov.style.opacity='';
+      ov.style.pointerEvents='';
+    }
     updateDesktopLayoutButtons();
     return;
+  }
+  if(sb)sb.classList.remove('open');
+  if(ov){
+    ov.style.display='none';
+    ov.style.opacity='';
+    ov.style.pointerEvents='';
   }
   const sbCollapsed=safeLSGet(PREF_SB_COLLAPSED)==='1';
   if(!isDesktopWide()){
@@ -1897,6 +1928,7 @@ function applyDesktopLayoutPrefs(){
 }
 function toggleDesktopSidebar(force){
   if(!appEl||!canCollapseSidebar())return;
+  if(typeof force!=='boolean'&&!acquireDesktopSidebarToggleLock())return;
   const next=typeof force==='boolean'?force:!appEl.classList.contains('sb-collapsed');
   appEl.classList.toggle('sb-collapsed',next);
   safeLSSet(PREF_SB_COLLAPSED,next?'1':'0');
@@ -1953,7 +1985,7 @@ function setProfessorModeUI(){
   const input=document.getElementById('ifield');
   if(input)input.placeholder='Digite um comando';
   const hint=document.getElementById('shortcutHint');
-  if(hint)hint.textContent='D = tema · S = som';
+  if(hint)hint.textContent='M/[ = menu · D = tema · S = som';
   updateDesktopLayoutButtons();
 }
 window.addEventListener('resize',applyDesktopLayoutPrefs,{passive:true});
@@ -2048,6 +2080,12 @@ document.addEventListener('keydown',e=>{
   if(k==='d'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();toggleDark();return;}
   if(k==='t'&&!e.ctrlKey&&!e.metaKey&&papel!=='professor'){e.preventDefault();toggleTimer();return;}
   if(k==='s'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();toggleSound();return;}
+  if(k==='m'&&!e.ctrlKey&&!e.metaKey){
+    e.preventDefault();
+    if(window.matchMedia('(max-width:900px)').matches)toggleSb();
+    else toggleDesktopSidebar();
+    return;
+  }
   if(k==='['&&!e.ctrlKey&&!e.metaKey){e.preventDefault();toggleDesktopSidebar();return;}
   if(k===']'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();toggleRightPanel();return;}
   // calculator shortcuts (only when calc is open)
